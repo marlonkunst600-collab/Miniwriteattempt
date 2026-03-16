@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding a "Copy to Clipboard" Action to the Block Toolbar</title>
+</head>
+<body style="margin: 0; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #3c434a; line-height: 1.6;">
+
+    <!-- Main Container -->
+    <div style="max-width: 850px; margin: 0 auto; background: #ffffff; padding: 50px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #dcdcde;">
+        
+        <!-- Header -->
+        <header style="border-bottom: 2px solid #f0f2f5; margin-bottom: 30px; padding-bottom: 20px;">
+            <h1 style="margin: 0; color: #1d2327; font-size: 28px; letter-spacing: -0.5px;">Adding a "Copy to Clipboard" Action to the Block Toolbar</h1>
+        </header>
+
+        <!-- Intro -->
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            Many beginners think the toolbar is only there to align text or handle bold/italic styling, but you can add a significant amount of custom functionality to it.
+        </p>
+        
+        <!-- Callout Box -->
+        <div style="background-color: #f6f7f7; border-left: 4px solid #2271b1; padding: 20px; margin: 30px 0; border-radius: 0 4px 4px 0;">
+            <p style="margin: 0; font-style: italic;">
+                "It's especially useful for functions that your users should be able to access quickly without clicking through countless menus."
+            </p>
+        </div>
+
+        <p style="margin-bottom: 30px;">
+            This snippet adds a custom button to the floating toolbar of your block that allows users to instantly copy the block's text content. This is highly effective for blocks that display <strong>"Code Snippets"</strong>, <strong>"Referral Codes"</strong>, or <strong>"API Keys"</strong>.
+        </p>
+
+        <!-- Code Block Header -->
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">JavaScript Component:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">edit.js</code>
+        </div>
+
+        <!-- Syntax Highlighted Code -->
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+<span style="color: #c678dd;">import</span> { useBlockProps, BlockControls } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/block-editor'</span>;
+<span style="color: #c678dd;">import</span> { ToolbarGroup, ToolbarButton } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/components'</span>;
+<span style="color: #c678dd;">import</span> { copy } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/icons'</span>; <span style="color: #5c6370; font-style: italic;">// Using a core WordPress icon</span>
+
+<span style="color: #c678dd;">export default function</span> <span style="color: #61afef;">Edit</span>({ attributes }) {
+    <span style="color: #c678dd;">const</span> { content } = attributes;
+
+    <span style="color: #c678dd;">const</span> <span style="color: #61afef;">copyToClipboard</span> = () <span style="color: #c678dd;">=&gt;</span> {
+        navigator.clipboard.<span style="color: #61afef;">writeText</span>(content);
+        <span style="color: #61afef;">alert</span>(<span style="color: #98c379;">'Copied to clipboard!'</span>);
+    };
+
+    <span style="color: #c678dd;">return</span> (
+        &lt;&gt;
+            <span style="color: #5c6370; font-style: italic;">{/* This puts our button in the floating toolbar */}</span>
+            &lt;<span style="color: #e06c75;">BlockControls</span> <span style="color: #d19a66;">group</span>=<span style="color: #98c379;">"other"</span>&gt;
+                &lt;<span style="color: #e06c75;">ToolbarGroup</span>&gt;
+                    &lt;<span style="color: #e06c75;">ToolbarButton</span>
+                        <span style="color: #d19a66;">icon</span>={copy}
+                        <span style="color: #d19a66;">label</span>=<span style="color: #98c379;">"Copy Content"</span>
+                        <span style="color: #d19a66;">onClick</span>={copyToClipboard}
+                    /&gt;
+                &lt;/<span style="color: #e06c75;">ToolbarGroup</span>&gt;
+            &lt;/<span style="color: #e06c75;">BlockControls</span>&gt;
+
+            &lt;<span style="color: #e06c75;">div</span> {...<span style="color: #61afef;">useBlockProps</span>()}&gt;
+                &lt;<span style="color: #e06c75;">p</span>&gt;Content to copy: &lt;<span style="color: #e06c75;">strong</span>&gt;{content}&lt;/<span style="color: #e06c75;">strong</span>&gt;&lt;/<span style="color: #e06c75;">p</span>&gt;
+            &lt;/<span style="color: #e06c75;">div</span>&gt;
+        &lt;/&gt;
+    );
+}</pre>
+
+
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering InnerBlocks and Template Locking</title>
+</head>
+<body style="margin: 0; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #3c434a; line-height: 1.6;">
+
+    <!-- Main Container -->
+    <div style="max-width: 850px; margin: 0 auto; background: #ffffff; padding: 50px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #dcdcde;">
+        
+        <!-- Header -->
+        <header style="border-bottom: 2px solid #f0f2f5; margin-bottom: 30px; padding-bottom: 20px;">
+            <h1 style="margin: 0; color: #1d2327; font-size: 28px; letter-spacing: -0.5px;">Mastering InnerBlocks and Template Locking</h1>
+        </header>
+
+        <!-- Intro -->
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            An important part of the WordPress Block Editor is its nesting capabilities. While a single block like a "Heading" or "Image" is useful, you can build more complex components using <strong>container blocks</strong>.
+        </p>
+        
+        <p style="margin-bottom: 20px;">
+            These are essentially blocks that hold other blocks inside, such as hero sections and testimonials. To build these, you use the <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 4px; font-family: monospace;">InnerBlocks</code> component.
+        </p>
+
+        <!-- Warning Callout -->
+        <div style="background-color: #fff8e1; border-left: 4px solid #ffb300; padding: 20px; margin: 30px 0; border-radius: 0 4px 4px 0;">
+            <p style="margin: 0;">
+                <strong>Design Integrity:</strong> Giving users too much choice can sometimes lead to layout breaks. <strong>Template Locking</strong> is the best way to maintain consistency.
+            </p>
+        </div>
+
+        <!-- Section: What is InnerBlocks? -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 15px;">What is InnerBlocks?</h2>
+        <p style="margin-bottom: 20px;">
+            <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 4px; font-family: monospace;">InnerBlocks</code> acts as a placeholder within your custom block where other blocks can be placed. If you've ever used the Core "Columns" or "Group" blocks, you've seen this in action.
+        </p>
+
+        <p style="margin-bottom: 20px;">
+            Without guidelines, users might accidentally place a "Latest Posts" block into a "Call to Action" button wrapper. This is where <strong>Templates</strong> come in.
+        </p>
+
+        <!-- Section: Templates -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 10px;">Defining a Blueprint with Templates</h2>
+        <p style="margin-bottom: 20px;">
+            A template is a list of blocks that pre-fill your component. Here is how you would define a template for a <strong>Testimonial Card</strong>:
+        </p>
+
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">File:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">edit.js</code>
+        </div>
+
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); margin-bottom: 30px;">
+<span style="color: #c678dd;">const</span> <span style="color: #e06c75;">MY_TEMPLATE</span> = [
+    [ <span style="color: #98c379;">'core/image'</span>, { <span style="color: #d19a66;">sizeSlug</span>: <span style="color: #98c379;">'thumbnail'</span> } ],
+    [ <span style="color: #98c379;">'core/heading'</span>, { <span style="color: #d19a66;">placeholder</span>: <span style="color: #98c379;">'Client Name'</span>, <span style="color: #d19a66;">level</span>: <span style="color: #d19a66;">3</span> } ],
+    [ <span style="color: #98c379;">'core/paragraph'</span>, { <span style="color: #d19a66;">placeholder</span>: <span style="color: #98c379;">'Write the testimonial here...'</span> } ],
+];
+
+<span style="color: #5c6370; font-style: italic;">// In your edit function:</span>
+&lt;<span style="color: #e06c75;">InnerBlocks</span> 
+    <span style="color: #d19a66;">template</span>={<span style="color: #e06c75;">MY_TEMPLATE</span>} 
+/&gt;</pre>
+
+        <!-- Section: Template Locking -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 15px;">Template Locking</h2>
+        <p style="margin-bottom: 20px;">
+            To prevent users from removing these default blocks or adding new ones, use the <code style="font-family: monospace; background: #f0f0f1; padding: 2px 6px; border-radius: 4px;">templateLock</code> prop.
+        </p>
+
+        <ul style="padding-left: 20px; margin-bottom: 30px;">
+            <li style="margin-bottom: 15px;">
+                <strong style="color: #2271b1;">'all'</strong>: Prevents adding, removing, or reordering blocks. Users can only edit content.
+            </li>
+            <li style="margin-bottom: 15px;">
+                <strong style="color: #2271b1;">'insert'</strong>: Prevents adding or removing blocks, but <strong>allows</strong> users to reorder existing ones.
+            </li>
+            <li style="margin-bottom: 15px;">
+                <strong style="color: #2271b1;">'contentOnly'</strong> (Pro Tip): Introduced in WP 6.1, this hides all design tools and only lets the user change text/images.
+            </li>
+            <li style="margin-bottom: 15px;">
+                <strong style="color: #2271b1;">false</strong>: The default state; users have full control.
+            </li>
+        </ul>
+
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+&lt;<span style="color: #e06c75;">InnerBlocks</span> 
+    <span style="color: #d19a66;">template</span>={<span style="color: #e06c75;">MY_TEMPLATE</span>}
+    <span style="color: #d19a66;">templateLock</span>=<span style="color: #98c379;">"all"</span>
+/&gt;</pre>
+
+
+
+    </div>
+</body>
+</html>

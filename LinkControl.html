@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementing LinkControl in WordPress Blocks</title>
+</head>
+<body style="margin: 0; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #3c434a; line-height: 1.6;">
+
+    <!-- Main Container -->
+    <div style="max-width: 850px; margin: 0 auto; background: #ffffff; padding: 50px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #dcdcde;">
+        
+        <!-- Header -->
+        <header style="border-bottom: 2px solid #f0f2f5; margin-bottom: 30px; padding-bottom: 20px;">
+            <h1 style="margin: 0; color: #1d2327; font-size: 28px; letter-spacing: -0.5px;">How to implement <code style="font-family: monospace; background: #f0f0f1; padding: 2px 6px; border-radius: 4px;">__experimentalLinkControl</code></h1>
+        </header>
+
+        <!-- Intro Section -->
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            A very common requirement when building a custom WordPress block is a link field. 
+        </p>
+        
+        <p style="margin-bottom: 20px;">
+            Whether you are creating a "Call to Action" block, a custom button, or a linked image, you will need a way for your users to search for internal pages or paste external URLs. While you could technically use a simple text input, the user experience would not be great.
+        </p>
+
+        <p style="margin-bottom: 30px;">
+            This is why I often use <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 4px; font-family: monospace;">__experimentalLinkControl</code>, since it provides the same, search-optimized interface used by the Paragraph and Button blocks from the WordPress Core.
+        </p>
+
+        <!-- Section: What is LinkControl -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 15px;">What is LinkControl?</h2>
+        <p style="margin-bottom: 20px;">
+            LinkControl is a high-level component within the <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 4px; font-family: monospace;">@wordpress/block-editor</code> package. It includes search suggestions, support for external URLs, and a UI that looks like the rest of WordPress. You can also add toggles for "Open in New Tab" or "No-follow" attributes.
+        </p>
+
+        <!-- Version Warning Callout -->
+        <div style="background-color: #fff8e1; border-left: 4px solid #ffb300; padding: 25px; margin: 35px 0; border-radius: 0 4px 4px 0;">
+            <h3 style="margin-top: 0; font-size: 18px; color: #856404;">No longer Experimental</h3>
+            <p style="margin-bottom: 0;">
+                For the last few years we had to access this component via the <code style="background: rgba(0,0,0,0.05); padding: 2px 4px;">__experimentalLinkControl</code> export. As of <strong>WordPress 6.8</strong> (Gutenberg 19.9), the component has officially stabilized. If you are working on a modern project, you can now import it directly as <code style="font-weight: bold;">LinkControl</code>.
+            </p>
+        </div>
+
+        <!-- Implementation: block.json -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 10px;">Implementing LinkControl</h2>
+        <p style="margin-bottom: 20px;">First, define an attribute in your <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 4px; font-family: monospace;">block.json</code> to store the link data (usually as an object):</p>
+        
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">File:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">block.json</code>
+        </div>
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; margin-bottom: 30px;">
+{
+    <span style="color: #e06c75;">"attributes"</span>: {
+        <span style="color: #e06c75;">"link"</span>: {
+            <span style="color: #e06c75;">"type"</span>: <span style="color: #98c379;">"object"</span>,
+            <span style="color: #e06c75;">"default"</span>: { 
+                <span style="color: #e06c75;">"url"</span>: <span style="color: #98c379;">""</span>, 
+                <span style="color: #e06c75;">"opensInNewTab"</span>: <span style="color: #d19a66;">false</span> 
+            }
+        }
+    }
+}</pre>
+
+        <!-- Implementation: edit.js -->
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">File:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">edit.js</code>
+        </div>
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; margin-bottom: 35px;">
+<span style="color: #c678dd;">import</span> { __experimentalLinkControl <span style="color: #c678dd;">as</span> LinkControl } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/block-editor'</span>;
+
+<span style="color: #c678dd;">export default function</span> <span style="color: #61afef;">Edit</span>({ attributes, setAttributes }) {
+    <span style="color: #c678dd;">const</span> { link } = attributes;
+
+    <span style="color: #c678dd;">return</span> (
+        &lt;<span style="color: #e06c75;">div</span> { ...<span style="color: #61afef;">useBlockProps</span>() }&gt;
+            &lt;<span style="color: #e06c75;">LinkControl</span>
+                <span style="color: #d19a66;">value</span>={ link }
+                <span style="color: #d19a66;">onChange</span>={ (<span style="color: #e06c75;">newLink</span>) =&gt; <span style="color: #61afef;">setAttributes</span>({ link: newLink }) }
+                <span style="color: #d19a66;">settings</span>={[
+                    {
+                        <span style="color: #e06c75;">id</span>: <span style="color: #98c379;">'opensInNewTab'</span>,
+                        <span style="color: #e06c75;">title</span>: <span style="color: #98c379;">'Open in new tab'</span>,
+                    },
+                ]}
+                <span style="color: #d19a66;">suggestionsQuery</span>={{
+                    <span style="color: #e06c75;">type</span>: <span style="color: #98c379;">'post'</span>,
+                    <span style="color: #e06c75;">subtype</span>: <span style="color: #98c379;">'page'</span>,
+                }}
+            /&gt;
+        &lt;/<span style="color: #e06c75;">div</span>&gt;
+    );
+}</pre>
+
+        <!-- Why Use suggestionsQuery -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 15px;">Why Use <code style="font-family: monospace;">suggestionsQuery</code>?</h2>
+        <p style="margin-bottom: 20px;">
+            One of the best features of LinkControl is the <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 4px; font-family: monospace;">suggestionsQuery</code> prop. By default, the search looks through all public post types.
+        </p>
+        <p style="margin-bottom: 0;">
+            By passing <code style="color: #2271b1; font-weight: bold;">{ type: 'post', subtype: 'product' }</code>, you can create a better experience that prevents users from accidentally linking to the wrong content type.
+        </p>
+
+
+
+    </div>
+</body>
+</html>

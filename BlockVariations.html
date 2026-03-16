@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WordPress Block Variations Guide</title>
+</head>
+<body style="margin: 0; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #3c434a; line-height: 1.6;">
+
+    <!-- Main Card -->
+    <div style="max-width: 850px; margin: 0 auto; background: #ffffff; padding: 50px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #dcdcde;">
+        
+        <!-- Header -->
+        <header style="border-bottom: 2px solid #f0f2f5; margin-bottom: 30px; padding-bottom: 20px;">
+            <h1 style="margin: 0; color: #1d2327; font-size: 28px; letter-spacing: -0.5px;">Understanding Block Variations</h1>
+        </header>
+
+        <!-- Intro Section -->
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            Building custom blocks from scratch is powerful, but it is often a bit tedious to set up.
+        </p>
+        
+        <p style="margin-bottom: 20px;">
+            If you find yourself repeatedly configuring the same Core block settings, like setting a button to a specific brand color or choosing a specific column layout, then <strong>Block Variations</strong> can help you out.
+        </p>
+
+        <div style="background-color: #f6f7f7; border-left: 4px solid #2271b1; padding: 20px; margin: 30px 0; border-radius: 0 4px 4px 0;">
+            <p style="margin: 0; font-style: italic;">
+                "A Block Variation is essentially a <strong>preset</strong> for one of the existing blocks in WordPress."
+            </p>
+        </div>
+
+        <p style="margin-bottom: 30px;">
+            To create a variation, you’ll use the <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 4px; font-family: monospace;">registerBlockVariation</code> function in a JavaScript file enqueued via the <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 4px; font-family: monospace;">enqueue_block_editor_assets</code> hook.
+        </p>
+
+        <!-- Subheading -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 15px;">Creating a "Primary CTA" Variation</h2>
+        
+        <p style="margin-bottom: 20px;">
+            This code allows you to create a pre-styled <strong>"Primary Call to Action"</strong> that appears in the block inserter as if it were its own block, but it actually uses the standard WordPress Button block under the hood.
+        </p>
+
+        <!-- File Path Info -->
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">File:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">src/index.js</code>
+        </div>
+
+        <!-- Code Block -->
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+<span style="color: #c678dd;">import</span> { registerBlockVariation } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/blocks'</span>;
+
+<span style="color: #61afef;">registerBlockVariation</span>( <span style="color: #98c379;">'core/button'</span>, {
+    <span style="color: #e06c75;">name</span>: <span style="color: #98c379;">'primary-cta'</span>,
+    <span style="color: #e06c75;">title</span>: <span style="color: #98c379;">'Primary Call to Action'</span>,
+    <span style="color: #e06c75;">description</span>: <span style="color: #98c379;">'A high-contrast button for main site actions.'</span>,
+    <span style="color: #e06c75;">category</span>: <span style="color: #98c379;">'design'</span>,
+    <span style="color: #e06c75;">icon</span>: <span style="color: #98c379;">'admin-links'</span>,
+    <span style="color: #e06c75;">attributes</span>: {
+        <span style="color: #e06c75;">backgroundColor</span>: <span style="color: #98c379;">'black'</span>,
+        <span style="color: #e06c75;">textColor</span>: <span style="color: #98c379;">'white'</span>,
+        <span style="color: #e06c75;">className</span>: <span style="color: #98c379;">'is-style-fill my-custom-cta-shadow'</span>,
+        <span style="color: #e06c75;">placeholder</span>: <span style="color: #98c379;">'Get Started Today...'</span>,
+    },
+    <span style="color: #5c6370; font-style: italic;">// This ensures the variation is "active" in the

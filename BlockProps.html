@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering Dynamic Styles: CSS Variables in useBlockProps</title>
+</head>
+<body style="margin: 0; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #3c434a; line-height: 1.6;">
+
+    <!-- Main Container -->
+    <div style="max-width: 850px; margin: 0 auto; background: #ffffff; padding: 50px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #dcdcde;">
+        
+        <!-- Header -->
+        <header style="border-bottom: 2px solid #f0f2f5; margin-bottom: 30px; padding-bottom: 20px;">
+            <h1 style="margin: 0; color: #1d2327; font-size: 28px; letter-spacing: -0.5px;">Mastering Dynamic Styles: CSS Variables in <code style="font-family: monospace; background: #f0f0f1; padding: 2px 6px; border-radius: 4px;">useBlockProps</code></h1>
+        </header>
+
+        <!-- Intro -->
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            When building custom WordPress blocks, it can be difficult to manage styles like a user-selected background color or custom spacing. 
+        </p>
+        
+        <p style="margin-bottom: 20px;">
+            A lot of developers use inline styles, but these are hard to override and clutter the HTML. A better solution is to map block attributes to <strong>CSS Custom Properties (Variables)</strong> using the <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 4px; font-family: monospace;">useBlockProps</code> hook.
+        </p>
+
+        <!-- Section: Why Use CSS Variables? -->
+        <div style="background-color: #f6f7f7; border-left: 4px solid #2271b1; padding: 25px; margin: 35px 0; border-radius: 0 4px 4px 0;">
+            <h2 style="margin-top: 0; font-size: 20px; color: #1d2327;">Why Use CSS Variables?</h2>
+            <p style="margin-bottom: 0;">
+                Instead of having to inject a hardcoded value like <code style="color: #d63384;">style="color: #ff0000"</code>, you can now inject a variable: <code style="color: #d63384;">style="--brand-color: #ff0000"</code>. 
+            </p>
+            <p style="margin-top: 15px; margin-bottom: 0;">
+                This way your code will be cleaner and you will also be able to use that variable inside complex CSS functions like <code style="font-family: monospace;">calc()</code>, <code style="font-family: monospace;">rgba()</code>, or within media queries in your <strong>style.css</strong> file.
+            </p>
+        </div>
+
+        <!-- 1. The Javascript -->
+        <h3 style="color: #1d2327; font-size: 20px; margin-top: 40px; margin-bottom: 10px;">1. The JavaScript (<code style="color: #2271b1; font-size: 16px;">edit.js</code>)</h3>
+        
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); margin-bottom: 30px;">
+<span style="color: #c678dd;">import</span> { useBlockProps, InspectorControls } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/block-editor'</span>;
+<span style="color: #c678dd;">import</span> { PanelBody, ColorPalette } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/components'</span>;
+
+<span style="color: #c678dd;">export default function</span> <span style="color: #61afef;">Edit</span>({ attributes, setAttributes }) {
+    <span style="color: #c678dd;">const</span> { accentColor } = attributes;
+
+    <span style="color: #5c6370; font-style: italic;">// We inject the attribute as a CSS Variable</span>
+    <span style="color: #c678dd;">const</span> blockProps = <span style="color: #61afef;">useBlockProps</span>({
+        <span style="color: #e06c75;">style</span>: {
+            <span style="color: #98c379;">'--block-accent'</span>: accentColor || <span style="color: #98c379;">'#007cba'</span>,
+        },
+    });
+
+    <span style="color: #c678dd;">return</span> (
+        &lt;&gt;
+            &lt;<span style="color: #e06c75;">InspectorControls</span>&gt;
+                &lt;<span style="color: #e06c75;">PanelBody</span> <span style="color: #d19a66;">title</span>=<span style="color: #98c379;">"Settings"</span>&gt;
+                    &lt;<span style="color: #e06c75;">ColorPalette</span>
+                        <span style="color: #d19a66;">value</span>={accentColor}
+                        <span style="color: #d19a66;">onChange</span>={(<span style="color: #e06c75;">val</span>) =&gt; <span style="color: #61afef;">setAttributes</span>({ <span style="color: #e06c75;">accentColor</span>: val })}
+                    /&gt;
+                &lt;/<span style="color: #e06c75;">PanelBody</span>&gt;
+            &lt;/<span style="color: #e06c75;">InspectorControls</span>&gt;
+            
+            &lt;<span style="color: #e06c75;">div</span> {...blockProps}&gt;
+                &lt;<span style="color: #e06c75;">p</span>&gt;The border and text color are controlled by a CSS variable!&lt;/<span style="color: #e06c75;">p</span>&gt;
+            &lt;/<span style="color: #e06c75;">div</span>&gt;
+        &lt;/&gt;
+    );
+}</pre>
+
+        <!-- 2. The CSS -->
+        <h3 style="color: #1d2327; font-size: 20px; margin-top: 40px; margin-bottom: 10px;">2. The CSS (<code style="color: #2271b1; font-size: 16px;">style.scss</code>)</h3>
+        
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+<span style="color: #5c6370; font-style: italic;">/* No need for inline style logic here! */</span>
+<span style="color: #d19a66;">.wp-block-my-custom-block</span> {
+    <span style="color: #e06c75;">border</span>: 2px solid <span style="color: #61afef;">var</span>(--block-accent);
+    <span style="color: #e06c75;">color</span>: <span style="color: #61afef;">var</span>(--block-accent);
+    <span style="color: #e06c75;">padding</span>: 1rem;
+    <span style="color: #e06c75;">transition</span>: all 0.3s ease;
+}</pre>
+
+
+
+    </div>
+</body>
+</html>
