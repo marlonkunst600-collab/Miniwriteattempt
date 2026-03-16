@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding the ToolsPanel Component</title>
+</head>
+<body style="margin: 0; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #3c434a; line-height: 1.6;">
+
+    <!-- Main Container -->
+    <div style="max-width: 850px; margin: 0 auto; background: #ffffff; padding: 50px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #dcdcde;">
+        
+        <!-- Header -->
+        <header style="border-bottom: 2px solid #f0f2f5; margin-bottom: 30px; padding-bottom: 20px;">
+            <h1 style="margin: 0; color: #1d2327; font-size: 28px; letter-spacing: -0.5px;">Understanding the <code style="font-family: monospace; background: #f0f0f1; padding: 2px 6px; border-radius: 4px;">__experimentalToolsPanel</code> component</h1>
+        </header>
+
+        <!-- Intro Section -->
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            If you have looked at the "Dimensions" or "Border" panels in Core blocks, you have probably noticed a very distinct behavior.
+        </p>
+        
+        <p style="margin-bottom: 20px;">
+            They are incredibly clean by default, but you can click a "plus" or "vertical ellipsis" icon to reveal specific controls (like margin, padding, and radius). They also feature a "Reset" button that appears only when a value has been changed.
+        </p>
+
+        <!-- The Problem/Solution Callout -->
+        <div style="background-color: #f6f7f7; border-left: 4px solid #2271b1; padding: 25px; margin: 35px 0; border-radius: 0 4px 4px 0;">
+            <p style="margin: 0; margin-bottom: 15px;">
+                Most third-party developers simply dump a dozen <code style="font-family: monospace;">RangeControl</code> components into a <code style="font-family: monospace;">PanelBody</code>. This creates a cluttered, overwhelming experience for beginners.
+            </p>
+            <p style="margin: 0; font-weight: bold; color: #1d2327;">
+                Using ToolsPanel allows you to implement "Progressive Disclosure," making your block feel like a native WordPress tool.
+            </p>
+        </div>
+
+        <!-- Section: The Snippet -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 15px;">The Snippet: A Professional "Overlay" Panel</h2>
+        <p style="margin-bottom: 20px;">
+            This code creates a sidebar panel where the "Opacity" slider is hidden behind a menu by default. This keeps the UI tidy for basic users while remaining fully accessible for power users.
+        </p>
+
+        <!-- File Header -->
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">File:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">edit.js</code>
+        </div>
+
+        <!-- Syntax Highlighted Code -->
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); margin-bottom: 30px;">
+<span style="color: #c678dd;">import</span> { __ } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/i18n'</span>;
+<span style="color: #c678dd;">import</span> { useBlockProps, InspectorControls, PanelColorSettings } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/block-editor'</span>;
+<span style="color: #c678dd;">import</span> { 
+    __experimentalToolsPanel <span style="color: #c678dd;">as</span> ToolsPanel, 
+    __experimentalToolsPanelItem <span style="color: #c678dd;">as</span> ToolsPanelItem,
+    RangeControl 
+} <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/components'</span>;
+
+<span style="color: #c678dd;">export default function</span> <span style="color: #61afef;">Edit</span>( { attributes, setAttributes } ) {
+    <span style="color: #c678dd;">const</span> { overlayColor, opacity } = attributes;
+
+    <span style="color: #c678dd;">return</span> (
+        &lt;&gt;
+            &lt;<span style="color: #e06c75;">InspectorControls</span>&gt;
+                <span style="color: #5c6370; font-style: italic;">{/* The ToolsPanel replaces a standard PanelBody */}</span>
+                &lt;<span style="color: #e06c75;">ToolsPanel</span> <span style="color: #d19a66;">label</span>={ <span style="color: #61afef;">__</span>( <span style="color: #98c379;">'Overlay Settings'</span> ) }&gt;
+                    
+                    <span style="color: #5c6370; font-style: italic;">{/* Item 1: Always visible */}</span>
+                    &lt;<span style="color: #e06c75;">ToolsPanelItem</span>
+                        <span style="color: #d19a66;">label</span>={ <span style="color: #61afef;">__</span>( <span style="color: #98c379;">'Color'</span> ) }
+                        <span style="color: #d19a66;">isShownByDefault</span>={<span style="color: #d19a66;">true</span>}
+                        <span style="color: #d19a66;">hasValue</span>={ () =&gt; !! overlayColor }
+                        <span style="color: #d19a66;">onReset</span>={ () =&gt; <span style="color: #61afef;">setAttributes</span>({ <span style="color: #e06c75;">overlayColor</span>: <span style="color: #d19a66;">undefined</span> }) }
+                    &gt;
+                        &lt;<span style="color: #e06c75;">PanelColorSettings</span>
+                            <span style="color: #d19a66;">title</span>={ <span style="color: #61afef;">__</span>( <span style="color: #98c379;">'Overlay Color'</span> ) }
+                            <span style="color: #d19a66;">colorSettings</span>={ [ {
+                                <span style="color: #e06c75;">value</span>: overlayColor,
+                                <span style="color: #e06c75;">onChange</span>: (<span style="color: #e06c75;">color</span>) =&gt; <span style="color: #61afef;">setAttributes</span>({ overlayColor: color }),
+                                <span style="color: #e06c75;">label</span>: <span style="color: #61afef;">__</span>( <span style="color: #98c379;">'Color'</span> ),
+                            } ] }
+                        /&gt;
+                    &lt;/<span style="color: #e06c75;">ToolsPanelItem</span>&gt;
+
+                    <span style="color: #5c6370; font-style: italic;">{/* Item 2: Progressive Disclosure (Hidden by default) */}</span>
+                    &lt;<span style="color: #e06c75;">ToolsPanelItem</span>
+                        <span style="color: #d19a66;">label</span>={ <span style="color: #61afef;">__</span>( <span style="color: #98c379;">'Opacity'</span> ) }
+                        <span style="color: #d19a66;">isShownByDefault</span>={<span style="color: #d19a66;">false</span>} <span style="color: #5c6370; font-style: italic;">// The secret to a clean UI</span>
+                        <span style="color: #d19a66;">hasValue</span>={ () =&gt; opacity !== <span style="color: #d19a66;">0.5</span> }
+                        <span style="color: #d19a66;">onReset</span>={ () =&gt; <span style="color: #61afef;">setAttributes</span>({ <span style="color: #e06c75;">opacity</span>: <span style="color: #d19a66;">0.5</span> }) }
+                    &gt;
+                        &lt;<span style="color: #e06c75;">RangeControl</span>
+                            <span style="color: #d19a66;">label</span>={ <span style="color: #61afef;">__</span>( <span style="color: #98c379;">'Opacity'</span> ) }
+                            <span style="color: #d19a66;">value</span>={ opacity }
+                            <span style="color: #d19a66;">onChange</span>={ (<span style="color: #e06c75;">val</span>) =&gt; <span style="color: #61afef;">setAttributes</span>({ opacity: val }) }
+                            <span style="color: #d19a66;">min</span>={<span style="color: #d19a66;">0</span>} <span style="color: #d19a66;">max</span>={<span style="color: #d19a66;">1</span>} <span style="color: #d19a66;">step</span>={<span style="color: #d19a66;">0.1</span>}
+                        /&gt;
+                    &lt;/<span style="color: #e06c75;">ToolsPanelItem</span>&gt;
+
+                &lt;/<span style="color: #e06c75;">ToolsPanel</span>&gt;
+            &lt;/<span style="color: #e06c75;">InspectorControls</span>&gt;
+
+            &lt;<span style="color: #e06c75;">div</span> { ...<span style="color: #61afef;">useBlockProps</span>({
+                <span style="color: #e06c75;">style</span>: { <span style="color: #e06c75;">backgroundColor</span>: overlayColor, <span style="color: #e06c75;">opacity</span>: opacity }
+            }) }&gt;
+                { <span style="color: #61afef;">__</span>( <span style="color: #98c379;">'Overlay Content'</span> ) }
+            &lt;/<span style="color: #e06c75;">div</span>&gt;
+        &lt;/&gt;
+    );
+}</pre>
+
+        <!-- Footer -->
+        <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #f0f2f5; text-align: center;">
+            <p style="font-size: 13px; color: #8c8f94;">WordPress Developer Docs &bull; Progressive Disclosure Guide</p>
+        </footer>
+
+    </div>
+</body>
+</html>

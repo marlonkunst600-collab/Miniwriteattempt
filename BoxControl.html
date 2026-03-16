@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precision Layouts with BoxControl</title>
+</head>
+<body style="margin: 0; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #3c434a; line-height: 1.6;">
+
+    <!-- Main Container -->
+    <div style="max-width: 850px; margin: 0 auto; background: #ffffff; padding: 50px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #dcdcde;">
+        
+        <!-- Header -->
+        <header style="border-bottom: 2px solid #f0f2f5; margin-bottom: 30px; padding-bottom: 20px;">
+            <h1 style="margin: 0; color: #1d2327; font-size: 28px; letter-spacing: -0.5px;">Precision Layouts with <code style="font-family: monospace; background: #f0f0f1; padding: 2px 6px; border-radius: 4px;">BoxControl</code></h1>
+        </header>
+
+        <!-- Intro -->
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            If you have ever tried to build a custom block with adjustable padding or margins, you probably know that it isn't exactly easy. 
+        </p>
+        
+        <p style="margin-bottom: 20px;">
+            Every time I have tried it without native components, the results were cluttered, confusing, and didn't match the Core WordPress UI. That’s why <strong>BoxControl</strong> has been a real savior.
+        </p>
+
+        <!-- Section: What is BoxControl -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 15px;">What is BoxControl?</h2>
+        <p style="margin-bottom: 20px;">
+            <code style="background: #f0f0f1; padding: 2px 6px; border-radius: 4px; font-family: monospace;">BoxControl</code> is a high-level component from the <code style="font-family: monospace;">@wordpress/components</code> package designed specifically for managing dimensions: <strong>Top, Right, Bottom, and Left</strong>.
+        </p>
+        <p style="margin-bottom: 20px;">
+            It provides a polished visual interface that allows users to link all sides for uniform spacing or unlink them to set individual values for each side.
+        </p>
+
+        <!-- Version Status Callout -->
+        <div style="background-color: #fff8e1; border-left: 4px solid #ffb300; padding: 25px; margin: 35px 0; border-radius: 0 4px 4px 0;">
+            <h3 style="margin-top: 0; font-size: 18px; color: #856404;">No longer Experimental</h3>
+            <p style="margin-bottom: 0;">
+                For the last few years, this component used the <code style="background: rgba(0,0,0,0.05); padding: 2px 4px;">__experimentalBoxControl</code> prefix. As of <strong>WordPress 6.7</strong>, the component has officially stabilized as <strong>BoxControl</strong>. You should transition your modern projects to the stable import.
+            </p>
+        </div>
+
+        <!-- Quick Implementation -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 10px;">Quick Implementation</h2>
+        <p style="margin-bottom: 20px;">
+            To use <code style="font-family: monospace;">BoxControl</code>, you must store your values as an object in your block attributes.
+        </p>
+        
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">File:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">edit.js</code>
+        </div>
+
+        <!-- Code Block -->
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+<span style="color: #c678dd;">import</span> { BoxControl } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/components'</span>;
+
+<span style="color: #c678dd;">export default function</span> <span style="color: #61afef;">Edit</span>({ attributes, setAttributes }) {
+    <span style="color: #c678dd;">const</span> { spacing } = attributes;
+
+    <span style="color: #c678dd;">return</span> (
+        &lt;<span style="color: #e06c75;">BoxControl</span>
+            <span style="color: #d19a66;">label</span>=<span style="color: #98c379;">"Custom Padding"</span>
+            <span style="color: #d19a66;">values</span>={ spacing }
+            <span style="color: #d19a66;">onChange</span>={ (<span style="color: #e06c75;">nextValues</span>) =&gt; <span style="color: #61afef;">setAttributes</span>({ <span style="color: #e06c75;">spacing</span>: nextValues }) }
+            <span style="color: #d19a66;">allowReset</span>={ <span style="color: #d19a66;">true</span> }
+            <span style="color: #d19a66;">units</span>={ [ <span style="color: #98c379;">'px'</span>, <span style="color: #98c379;">'em'</span>, <span style="color: #98c379;">'rem'</span>, <span style="color: #98c379;">'vw'</span> ] }
+        /&gt;
+    );
+}</pre>
+
+
+
+    </div>
+</body>
+</html>

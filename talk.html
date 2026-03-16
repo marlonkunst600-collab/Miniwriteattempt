@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta-Synced Blocks with useEntityProp</title>
+</head>
+<body style="margin: 0; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #3c434a; line-height: 1.6;">
+
+    <!-- Main Container -->
+    <div style="max-width: 850px; margin: 0 auto; background: #ffffff; padding: 50px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #dcdcde;">
+        
+        <!-- Header -->
+        <header style="border-bottom: 2px solid #f0f2f5; margin-bottom: 30px; padding-bottom: 20px;">
+            <h1 style="margin: 0; color: #1d2327; font-size: 28px; letter-spacing: -0.5px;">Building a "Meta-Synced" Block using <code style="font-family: monospace; background: #f0f0f1; padding: 2px 6px; border-radius: 4px;">useEntityProp</code></h1>
+        </header>
+
+        <!-- Intro -->
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            A very common annoyance is deciding where to store block data. Most blocks save data inside the post content using HTML comments.
+        </p>
+        
+        <p style="margin-bottom: 20px;">
+            But what if you need that data to be searchable, filterable, or used by another plugin? Then you should use <strong>Post-Meta</strong>.
+        </p>
+
+        <div style="background-color: #f6f7f7; border-left: 4px solid #2271b1; padding: 20px; margin: 30px 0; border-radius: 0 4px 4px 0;">
+            <p style="margin: 0; font-style: italic;">
+                The following block creates a custom metafield attached to the post itself. Use this method for "Review Scores," "Price Tags," or "Sponsored Post" toggles.
+            </p>
+        </div>
+
+        <!-- Section 1: PHP -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 10px;">1. The PHP (Essential for REST API access)</h2>
+        <p style="margin-bottom: 20px;">
+            You must register the meta field in your PHP. Otherwise, the Block Editor's request will be blocked for security reasons.
+        </p>
+        
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">File:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">plugin.php</code>
+        </div>
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; margin-bottom: 30px;">
+<span style="color: #61afef;">add_action</span>( <span style="color: #98c379;">'init'</span>, <span style="color: #c678dd;">function</span>() {
+    <span style="color: #61afef;">register_post_meta</span>( <span style="color: #98c379;">'post'</span>, <span style="color: #98c379;">'_my_custom_rating'</span>, [
+        <span style="color: #98c379;">'show_in_rest'</span> =&gt; <span style="color: #d19a66;">true</span>,
+        <span style="color: #98c379;">'single'</span>       =&gt; <span style="color: #d19a66;">true</span>,
+        <span style="color: #98c379;">'type'</span>         =&gt; <span style="color: #98c379;">'number'</span>,
+    ] );
+} );</pre>
+
+        <!-- Section 2: Edit.js -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 10px;">2. The Editor Logic</h2>
+        
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">File:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">edit.js</code>
+        </div>
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; margin-bottom: 30px;">
+<span style="color: #c678dd;">import</span> { useEntityProp } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/core-data'</span>;
+<span style="color: #c678dd;">import</span> { useBlockProps } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/block-editor'</span>;
+<span style="color: #c678dd;">import</span> { RangeControl } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/components'</span>;
+
+<span style="color: #c678dd;">export default function</span> <span style="color: #61afef;">Edit</span>( { context } ) {
+    <span style="color: #c678dd;">const</span> blockProps = <span style="color: #61afef;">useBlockProps</span>();
+    <span style="color: #c678dd;">const</span> postType = context.<span style="color: #e06c75;">postType</span>;
+
+    <span style="color: #5c6370; font-style: italic;">// This hook acts like useState, but targets database meta!</span>
+    <span style="color: #c678dd;">const</span> [ meta, setMeta ] = <span style="color: #61afef;">useEntityProp</span>( <span style="color: #98c379;">'postType'</span>, postType, <span style="color: #98c379;">'meta'</span> );
+
+    <span style="color: #c678dd;">const</span> rating = meta[ <span style="color: #98c379;">'_my_custom_rating'</span> ] || <span style="color: #d19a66;">0</span>;
+
+    <span style="color: #c678dd;">const</span> <span style="color: #61afef;">updateRating</span> = ( <span style="color: #e06c75;">newValue</span> ) <span style="color: #c678dd;">=&gt;</span> {
+        <span style="color: #61afef;">setMeta</span>( { ...meta, <span style="color: #e06c75;">_my_custom_rating</span>: newValue } );
+    };
+
+    <span style="color: #c678dd;">return</span> (
+        &lt;<span style="color: #e06c75;">div</span> { ...blockProps }&gt;
+            &lt;<span style="color: #e06c75;">RangeControl</span>
+                <span style="color: #d19a66;">label</span>=<span style="color: #98c379;">"Rating Score"</span>
+                <span style="color: #d19a66;">value</span>={ rating }
+                <span style="color: #d19a66;">onChange</span>={ updateRating }
+                <span style="color: #d19a66;">min</span>={<span style="color: #d19a66;">0</span>} <span style="color: #d19a66;">max</span>={<span style="color: #d19a66;">5</span>} <span style="color: #d19a66;">step</span>={<span style="color: #d19a66;">0.5</span>}
+            /&gt;
+            &lt;<span style="color: #e06c75;">p</span>&gt;Saved to &lt;<span style="color: #e06c75;">strong</span>&gt;wp_postmeta&lt;/<span style="color: #e06c75;">strong</span>&gt;, not post_content.&lt;/<span style="color: #e06c75;">p</span>&gt;
+        &lt;/<span style="color: #e06c75;">div</span>&gt;
+    );
+}</pre>
+
+        <!-- Section 3: block.json -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 10px;">3. The Configuration</h2>
+        <p style="margin-bottom: 20px;">
+            Crucially, you have to tell the block to "listen" to the post type context so it knows which post it belongs to.
+        </p>
+
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">File:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">block.json</code>
+        </div>
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5;">
+{
+    <span style="color: #e06c75;">"usesContext"</span>: [ <span style="color: #98c379;">"postType"</span> ]
+}</pre>
+
+
+
+    </div>
+</body>
+</html>

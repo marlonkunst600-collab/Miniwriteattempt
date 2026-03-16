@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding the Navigator Component</title>
+</head>
+<body style="margin: 0; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #3c434a; line-height: 1.6;">
+
+    <!-- Main Container -->
+    <div style="max-width: 850px; margin: 0 auto; background: #ffffff; padding: 50px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #dcdcde;">
+        
+        <!-- Header -->
+        <header style="border-bottom: 2px solid #f0f2f5; margin-bottom: 30px; padding-bottom: 20px;">
+            <h1 style="margin: 0; color: #1d2327; font-size: 28px; letter-spacing: -0.5px;">Understanding the <code style="font-family: monospace; background: #f0f0f1; padding: 2px 6px; border-radius: 4px;">__experimentalNavigator</code> component</h1>
+        </header>
+
+        <!-- Intro -->
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            As your block sidebars become more complex, you will often find that users have to scroll through ten different panels just to find a single setting.
+        </p>
+        
+        <p style="margin-bottom: 20px;">
+            The <strong>Navigator API</strong> allows you to build an interface where users can move between different screens of settings within the same sidebar space—similar to the interface used in the WordPress Site Editor's "Styles" section.
+        </p>
+
+        <!-- Callout -->
+        <div style="background-color: #f6f7f7; border-left: 4px solid #2271b1; padding: 20px; margin: 30px 0; border-radius: 0 4px 4px 0;">
+            <p style="margin: 0; font-style: italic;">
+                "This allows you to navigate into 'Typography' or 'Layout' sub-menus, complete with back buttons and smooth transitions."
+            </p>
+        </div>
+
+        <!-- File Header -->
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">File:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">edit.js</code>
+        </div>
+
+        <!-- Main Code Block -->
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; overflow-x: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 14px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); margin-bottom: 40px;">
+<span style="color: #c678dd;">import</span> { __ } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/i18n'</span>;
+<span style="color: #c678dd;">import</span> { useBlockProps, InspectorControls } <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/block-editor'</span>;
+<span style="color: #c678dd;">import</span> {
+    PanelBody,
+    __experimentalNavigatorProvider <span style="color: #c678dd;">as</span> NavigatorProvider,
+    __experimentalNavigatorScreen <span style="color: #c678dd;">as</span> NavigatorScreen,
+    __experimentalNavigatorButton <span style="color: #c678dd;">as</span> NavigatorButton,
+    __experimentalNavigatorBackButton <span style="color: #c678dd;">as</span> NavigatorBackButton,
+    __experimentalVStack <span style="color: #c678dd;">as</span> VStack,
+} <span style="color: #c678dd;">from</span> <span style="color: #98c379;">'@wordpress/components'</span>;
+
+<span style="color: #c678dd;">export default function</span> <span style="color: #61afef;">Edit</span>({ attributes, setAttributes }) {
+    <span style="color: #c678dd;">return</span> (
+        &lt;<span style="color: #e06c75;">InspectorControls</span>&gt;
+            <span style="color: #5c6370; font-style: italic;">{ /* 1. The Provider wraps the entire navigation system */ }</span>
+            &lt;<span style="color: #e06c75;">NavigatorProvider</span> <span style="color: #d19a66;">initialPath</span>=<span style="color: #98c379;">"/"</span>&gt;
+                
+                <span style="color: #5c6370; font-style: italic;">{ /* SCREEN 1: The Main Menu */ }</span>
+                &lt;<span style="color: #e06c75;">NavigatorScreen</span> <span style="color: #d19a66;">path</span>=<span style="color: #98c379;">"/"</span>&gt;
+                    &lt;<span style="color: #e06c75;">PanelBody</span> <span style="color: #d19a66;">title</span>={ <span style="color: #61afef;">__</span>(<span style="color: #98c379;">'Settings'</span>) }&gt;
+                        &lt;<span style="color: #e06c75;">VStack</span> <span style="color: #d19a66;">spacing</span>={<span style="color: #d19a66;">4</span>}&gt;
+                            &lt;<span style="color: #e06c75;">NavigatorButton</span> <span style="color: #d19a66;">path</span>=<span style="color: #98c379;">"/typography"</span> <span style="color: #d19a66;">variant</span>=<span style="color: #98c379;">"tertiary"</span>&gt;
+                                { <span style="color: #61afef;">__</span>(<span style="color: #98c379;">'Typography Settings'</span>) }
+                            &lt;/<span style="color: #e06c75;">NavigatorButton</span>&gt;
+                        &lt;/<span style="color: #e06c75;">VStack</span>&gt;
+                    &lt;/<span style="color: #e06c75;">PanelBody</span>&gt;
+                &lt;/<span style="color: #e06c75;">NavigatorScreen</span>&gt;
+
+                <span style="color: #5c6370; font-style: italic;">{ /* SCREEN 2: Typography Sub-menu */ }</span>
+                &lt;<span style="color: #e06c75;">NavigatorScreen</span> <span style="color: #d19a66;">path</span>=<span style="color: #98c379;">"/typography"</span>&gt;
+                    &lt;<span style="color: #e06c75;">PanelBody</span>&gt;
+                        &lt;<span style="color: #e06c75;">NavigatorBackButton</span>&gt;{ <span style="color: #61afef;">__</span>(<span style="color: #98c379;">'Back'</span>) }&lt;/<span style="color: #e06c75;">NavigatorBackButton</span>&gt;
+                        <span style="color: #5c6370; font-style: italic;">{ /* Settings go here */ }</span>
+                    &lt;/<span style="color: #e06c75;">PanelBody</span>&gt;
+                &lt;/<span style="color: #e06c75;">NavigatorScreen</span>&gt;
+
+            &lt;/<span style="color: #e06c75;">NavigatorProvider</span>&gt;
+        &lt;/<span style="color: #e06c75;">InspectorControls</span>&gt;
+    );
+}</pre>
+
+        <!-- Layout Helpers Section -->
+        <h2 style="color: #1d2327; font-size: 22px; margin-top: 40px; margin-bottom: 15px;">Additional Layout Helpers: <code style="font-family: monospace;">VStack</code> and <code style="font-family: monospace;">HStack</code></h2>
+        <p style="margin-bottom: 20px;">
+            These components are part of the modern WordPress Layout system. They act as a declarative way to handle alignment and spacing without writing manual CSS.
+        </p>
+
+        <ul style="padding-left: 20px; margin-bottom: 30px;">
+            <li style="margin-bottom: 15px;">
+                <strong>Consistent Grids:</strong> Instead of manual margins, <code style="color: #2271b1;">&lt;VStack spacing={4}&gt;</code> applies exactly 16px (4 x 4px grid) of space between all children.
+            </li>
+            <li style="margin-bottom: 15px;">
+                <strong>Native RTL Support:</strong> When a user switches to an RTL language, your layout "mirrors" itself automatically.
+            </li>
+            <li style="margin-bottom: 15px;">
+                <strong>The Spacer:</strong> You can drop a <code style="background: #f0f0f1; padding: 2px 4px;">&lt;Spacer /&gt;</code> between items to fill all available space adaptively.
+            </li>
+        </ul>
+
+        <!-- Layout Snippet -->
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 13px; font-weight: bold; color: #646970; text-transform: uppercase;">Example:</span>
+            <code style="color: #2271b1; font-weight: bold; font-size: 14px;">HStack + Spacer</code>
+        </div>
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 25px; border-radius: 8px; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 14px; line-height: 1.5;">
+&lt;<span style="color: #e06c75;">HStack</span>&gt;
+    &lt;<span style="color: #e06c75;">Text</span>&gt;Feature Name&lt;/<span style="color: #e06c75;">Text</span>&gt;
+    &lt;<span style="color: #e06c75;">Spacer</span> /&gt;
+    &lt;<span style="color: #e06c75;">ToggleControl</span> /&gt;
+&lt;/<span style="color: #e06c75;">HStack</span>&gt;</pre>
+
+        <!-- Footer -->
+        <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #f0f2f5; text-align: center;">
+            <p style="font-size: 13px; color: #8c8f94;">WordPress Developer Docs &bull; Navigator API & Layout Guide</p>
+        </footer>
+
+    </div>
+</body>
+</html>
